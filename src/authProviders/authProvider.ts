@@ -1,5 +1,18 @@
 import { MsalAuthProvider, LoginType, IMsalAuthProviderConfig } from 'react-aad-msal';
 import { Configuration, AuthenticationParameters,   } from 'msal';
+import {  Logger, LogLevel } from 'msal';
+
+export declare type LogoutFunction = () => void;
+
+const logger = new Logger(
+  (logLevel, message, containsPii) => {
+    console.log("[MSAL]", message);
+  },
+  {
+    level: LogLevel.Verbose,
+    piiLoggingEnabled: false
+  }
+);
 
 const tenant = 'maubeinmetab2c.onmicrosoft.com';
 const signInPolicy = 'B2C_1_react_sign_up_sign_in';
@@ -21,7 +34,12 @@ const signInConfig : Configuration = {
 	cache: {
 		cacheLocation: 'sessionStorage',
 		storeAuthStateInCookie: true
-	}
+	},
+	// Enable logging of MSAL events for easier troubleshooting.
+    // This should be disabled in production builds.
+    system: {
+      logger: logger as any
+    },
 };
 
 // Authentication Parameters

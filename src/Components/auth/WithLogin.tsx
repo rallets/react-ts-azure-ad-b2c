@@ -1,11 +1,11 @@
 import React from 'react';
 import AzureAD, { AuthenticationState, IAzureADFunctionProps } from 'react-aad-msal';
-import { signInAuthProvider } from '../authProviders/authProvider';
-import { IApp } from './App';
+import { signInAuthProvider } from '../../authProviders/authProvider';
+import { AppProps } from '../App';
 import { IUnauthenticated } from './Unauthenticated';
 
 const WithLogin = (
-	Wrapped: React.ComponentType<IApp>,
+	Wrapped: React.ComponentType<AppProps>,
 	Authenticating: React.ComponentType,
 	Unauthenticated: React.ComponentType<IUnauthenticated>
 ) => {
