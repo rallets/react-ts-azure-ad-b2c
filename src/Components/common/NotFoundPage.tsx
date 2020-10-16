@@ -1,10 +1,7 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 
-export type NotFoundPageProps = {
-}
-
-export const NotFoundPage: FC<NotFoundPageProps> = () => {
+export const NotFoundPage: FC<{}> = () => {
 	return (
 		<div>
 			<h2>Page Not Found</h2>
@@ -13,4 +10,4 @@ export const NotFoundPage: FC<NotFoundPageProps> = () => {
 			</p>
 		</div>
 	);
-}
+};

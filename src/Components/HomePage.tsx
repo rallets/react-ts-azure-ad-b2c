@@ -1,10 +1,5 @@
 import React, { FC } from 'react';
 
-export type HomePageProps = {
-}
-
-export const HomePage: FC<HomePageProps> = () => {
-	return (
-		<span>Home Page</span>
-	);
-}
+export const HomePage: FC<{}> = () => {
+	return <span>Home Page</span>;
+};

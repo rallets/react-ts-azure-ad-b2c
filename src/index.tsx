@@ -1,14 +1,13 @@
+import 'bootstrap/dist/css/bootstrap.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import 'bootstrap/dist/css/bootstrap.css';
 import './App.scss';
-
-import WithLogin from './Components/auth/WithLogin';
+import App from './Components/App';
 import Authenticating from './Components/auth/Authenticating';
 import Unauthenticated from './Components/auth/Unauthenticated';
-import App from './Components/App';
+import WithLogin from './Components/auth/WithLogin';
 
-const AppWithLogin = () => WithLogin(App, Authenticating, Unauthenticated);
+const AppWithLogin = (): JSX.Element => WithLogin(App, Authenticating, Unauthenticated);
 
 ReactDOM.render(
 	<React.StrictMode>

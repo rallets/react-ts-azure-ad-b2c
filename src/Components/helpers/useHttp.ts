@@ -3,10 +3,10 @@ import { toast } from 'react-toastify';
 import { get, HttpResponse } from './http';
 
 export type ApiResult<T> = {
-	loading: boolean,
-	isValid: boolean,
-	item: T | null,
-}
+	loading: boolean;
+	isValid: boolean;
+	item: T | null;
+};
 
 export function useGet<T>(url: string): ApiResult<T> {
 	const [result, setResult] = React.useState<T | null>(null);
@@ -16,13 +16,12 @@ export function useGet<T>(url: string): ApiResult<T> {
 	useEffect(() => {
 		const abortController = new AbortController();
 
-		const fetchData = async () => {
+		const fetchData = async (): Promise<void> => {
 			setLoading(true);
 
 			let response: HttpResponse<T>;
 			try {
-				response = await get<T>(
-					url, {
+				response = await get<T>(url, {
 					headers: {
 						'content-type': 'application/json',
 					},
@@ -43,9 +42,9 @@ export function useGet<T>(url: string): ApiResult<T> {
 		};
 		fetchData();
 
-		return function cancel() {
+		return function cancel(): void {
 			abortController.abort();
-		}
+		};
 	}, [url]);
 
 	return { item: result, loading, isValid: isValid };

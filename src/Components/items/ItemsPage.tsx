@@ -1,18 +1,18 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Link, matchPath, Route, Switch, useLocation, useRouteMatch } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { guid } from '../../models/guid';
-import { NotFoundPage } from '../common/NotFoundPage';
+import { environment } from '../common/env';
 import { useUserStore } from '../common/UserStoreContext';
 import { get, HttpResponse } from '../helpers/http';
 import { ItemPage, ItemPageParams } from './ItemPage';
 
-export type ItemsPageProps = {
-}
+export type ItemsPageProps = {};
+
 export type Item = {
-	id: guid,
-	name: string,
-}
+	id: guid;
+	name: string;
+};
 
 export const ItemsPage: FC<ItemsPageProps> = () => {
 	const { readonly } = useUserStore();
@@ -21,9 +21,9 @@ export const ItemsPage: FC<ItemsPageProps> = () => {
 	// The `path` lets us build <Route> paths that are
 	// relative to the parent route, while the `url` lets
 	// us build relative links.
-	let { path } = useRouteMatch();
+	const { path } = useRouteMatch();
 
-	function handleAddItem() {
+	function handleAddItem(): void {
 		console.log('Add item');
 	}
 
@@ -31,7 +31,6 @@ export const ItemsPage: FC<ItemsPageProps> = () => {
 		<>
 			<div className="container-fluid">
 				<div className="row">
-
 					<div className="col-4">
 						{readonly && (
 							<div className="d-flex flex-row-reverse">
@@ -44,7 +43,7 @@ export const ItemsPage: FC<ItemsPageProps> = () => {
 						<div className="list-group">
 							{loading && <p>Loading...</p>}
 
-							{items.map(item => (
+							{items.map((item) => (
 								<ItemsRow key={item.id} item={item} />
 							))}
 						</div>
@@ -52,7 +51,7 @@ export const ItemsPage: FC<ItemsPageProps> = () => {
 
 					<div className="col-8">
 						<Switch>
-							<Route path={`${path}/:id`} >
+							<Route path={`${path}/:id`}>
 								<ItemPage />
 							</Route>
 							<Route path={path}>
@@ -64,51 +63,47 @@ export const ItemsPage: FC<ItemsPageProps> = () => {
 			</div>
 		</>
 	);
-}
+};
 
 type ItemsRowProps = {
-	item: Item
-}
+	item: Item;
+};
 
 const ItemsRow: FC<ItemsRowProps> = ({ item }) => {
 	// The `path` lets us build <Route> paths that are
 	// relative to the parent route, while the `url` lets
 	// us build relative links.
-	let { url } = useRouteMatch();
-	let { pathname } = useLocation();
+	const { url } = useRouteMatch();
+	const { pathname } = useLocation();
 
 	const match = matchPath<ItemPageParams>(pathname, {
 		path: '/items/:id',
 		exact: true,
-		strict: false
+		strict: false,
 	});
 	const id = match ? match.params.id : null;
 
 	return (
-		<Link
-			key={item.id}
-			className={`list-group-item list-group-item-action ${id === item.id ? "active" : ""}`}
-			to={`${url}/${item.id}`}>
+		<Link key={item.id} className={`list-group-item list-group-item-action ${id === item.id ? 'active' : ''}`} to={`${url}/${item.id}`}>
 			{item.name}
 		</Link>
 	);
-}
+};
 
 function useItems(): [Item[], boolean] {
 	const [result, setResult] = React.useState<Item[]>([]);
 	const [loading, setLoading] = React.useState(false);
 
 	useEffect(() => {
-		const fetchData = async () => {
+		const fetchData = async (): Promise<void> => {
 			setLoading(true);
 
 			let response: HttpResponse<Item[]>;
 			try {
-				response = await get<Item[]>(
-					'https://localhost:44358/Items/', {
+				response = await get<Item[]>(`${environment.apiBaseUrl}/Items/`, {
 					headers: {
 						'content-type': 'application/json',
-					}
+					},
 				});
 				setResult(response.parsedBody || []);
 			} catch (e) {

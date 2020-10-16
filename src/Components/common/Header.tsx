@@ -1,24 +1,24 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { IAccountInfo } from 'react-aad-msal';
 import { NavLink } from 'react-router-dom';
 import { LogoutFunction } from '../../authProviders/authProvider';
 import ObjectDump from './ObjectDump';
-import UserStoreContext, { useUserStore } from './UserStoreContext';
+import { useUserStore } from './UserStoreContext';
 
 export type HeaderProps = {
-	accountInfo: IAccountInfo,
-	logout: LogoutFunction,
-}
+	accountInfo: IAccountInfo;
+	logout: LogoutFunction;
+};
 
 export const Header: FC<HeaderProps> = ({ accountInfo, logout }) => {
 	const { readonly, setReadonly } = useUserStore();
 	const [showUserRawInfo, setShowUserRawInfo] = useState(false);
 
-	function handleShowUserRawInfo() {
+	function handleShowUserRawInfo(): void {
 		setShowUserRawInfo(!showUserRawInfo);
 	}
 
-	function handleReadonly() {
+	function handleReadonly(): void {
 		setReadonly(!readonly);
 	}
 
@@ -30,20 +30,30 @@ export const Header: FC<HeaderProps> = ({ accountInfo, logout }) => {
 				<div className="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul className="navbar-nav mr-auto">
 						<li className="nav-item">
-							<NavLink className="nav-link" activeClassName="active" exact to="/">Home</NavLink>
+							<NavLink className="nav-link" activeClassName="active" exact to="/">
+								Home
+							</NavLink>
 						</li>
 						<li className="nav-item">
-							<NavLink className="nav-link" activeClassName="active" to="/items">Items</NavLink>
+							<NavLink className="nav-link" activeClassName="active" to="/items">
+								Items
+							</NavLink>
 						</li>
 					</ul>
 					<div className="form-inline my-2 my-lg-0">
-						<span className="nav-link" onClick={handleShowUserRawInfo} >{accountInfo.account.name}</span>
-						<button className="btn btn-outline-info" onClick={handleReadonly}>{readonly ? 'R/W' : 'RO'}</button>
-						<button className="btn btn-outline-success" onClick={logout}>Logout</button>
+						<span className="nav-link" onClick={handleShowUserRawInfo}>
+							{accountInfo.account.name}
+						</span>
+						<button className="btn btn-outline-info" onClick={handleReadonly}>
+							{readonly ? 'R/W' : 'RO'}
+						</button>
+						<button className="btn btn-outline-success" onClick={logout}>
+							Logout
+						</button>
 					</div>
 				</div>
 			</nav>
-			{ showUserRawInfo && (
+			{showUserRawInfo && (
 				<div className="card mh-25">
 					<h5 className="card-header">User detail</h5>
 					<div className="card-body">
@@ -55,4 +65,4 @@ export const Header: FC<HeaderProps> = ({ accountInfo, logout }) => {
 			)}
 		</>
 	);
-}
+};

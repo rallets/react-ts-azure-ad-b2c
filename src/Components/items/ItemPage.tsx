@@ -1,21 +1,21 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { guid } from '../../models/guid';
+import { environment } from '../common/env';
 import ObjectDump from '../common/ObjectDump';
 import { ApiResult, useGet } from '../helpers/useHttp';
 import { Item } from './ItemsPage';
 
-export type ItemPageProps = {
-}
+export type ItemPageProps = {};
 export type ItemPageParams = {
-	id: string,
-}
+	id: string;
+};
 
 export const ItemPage: FC<ItemPageProps> = () => {
-	let { url, path } = useRouteMatch();
+	const { url, path } = useRouteMatch();
 	console.log(url, path);
 
-	let { id } = useParams<ItemPageParams>();
+	const { id } = useParams<ItemPageParams>();
 	const { isValid, item, loading } = useItem(id);
 
 	if (!isValid) {
@@ -31,10 +31,10 @@ export const ItemPage: FC<ItemPageProps> = () => {
 			<ObjectDump value={item} />
 		</>
 	);
-}
+};
 
 function useItem(id: guid): ApiResult<Item> {
-	const url = `https://localhost:44358/Items/${id}`;
+	const url = `${environment.apiBaseUrl}/Items/${id}`;
 
 	const result = useGet<Item>(url);
 	return result;
