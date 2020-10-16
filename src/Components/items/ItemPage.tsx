@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { guid } from '../../models/guid';
 import { environment } from '../common/env';
-import ObjectDump from '../common/ObjectDump';
 import { ApiResult, useGet } from '../helpers/useHttp';
+import { ItemEditData, ItemForm } from './ItemForm';
 import { Item } from './ItemsPage';
 
 export type ItemPageProps = {};
@@ -17,8 +17,20 @@ export const ItemPage: FC<ItemPageProps> = () => {
 
 	const { id } = useParams<ItemPageParams>();
 	const { isValid, item, loading } = useItem(id);
+	const [isEditing, setEditing] = useState(false);
+	const handleEditing = (): void => setEditing(true);
 
-	if (!isValid) {
+	function handleClose(): void {
+		console.log('Close');
+		setEditing(false);
+	}
+
+	function handleSave(item: ItemEditData): void {
+		console.log('Add item', item);
+		setEditing(false);
+	}
+
+	if (!isValid || !item) {
 		return <p>Invalid item</p>;
 	}
 
@@ -26,9 +38,34 @@ export const ItemPage: FC<ItemPageProps> = () => {
 		<>
 			{loading && <p>Loading...</p>}
 
-			<span>Item Page ID: {id}</span>
+			{isEditing && <ItemForm item={item} handleClose={handleClose} handleSave={handleSave} />}
 
-			<ObjectDump value={item} />
+			{!isEditing && (
+				<>
+					<div className="row">
+						<div className="col">
+							<button className="btn btn-outline-primary float-right" onClick={handleEditing}>
+								Edit
+							</button>
+						</div>
+					</div>
+					<div className="row">
+						<div className="col-4">Id</div>
+						<div className="col">{item?.id}</div>
+					</div>
+					<div className="row">
+						<div className="col-4">Name</div>
+						<div className="col">{item?.name}</div>
+					</div>
+					<div className="row">
+						<div className="col-4">Description</div>
+						<div className="col">{item?.description}</div>
+					</div>
+				</>
+			)}
+
+			{/* <span>Item Page ID: {id}</span>
+			<ObjectDump value={item} /> */}
 		</>
 	);
 };

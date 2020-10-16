@@ -12,6 +12,7 @@ export type ItemsPageProps = {};
 export type Item = {
 	id: guid;
 	name: string;
+	description: string;
 };
 
 export const ItemsPage: FC<ItemsPageProps> = () => {
