@@ -1,0 +1,40 @@
+import { guid } from '../../models/guid';
+import { environment } from '../common/env';
+import { ApiResult, deleteAsync, postAsync, putAsync, useGet } from '../helpers/useHttp';
+import { ItemEditData } from './ItemEditForm';
+import { Item, ItemHeader } from './models';
+
+export function useGetItems(): [ApiResult<ItemHeader[]>, () => void] {
+	const url = `${environment.apiBaseUrl}/Items/`;
+
+	const result = useGet<Item[]>(url);
+	return result;
+}
+
+export async function deleteItem(id: guid): Promise<boolean> {
+	const url = `${environment.apiBaseUrl}/Items/${id}`;
+
+	const result = await deleteAsync<boolean>(url);
+	return result || false;
+}
+
+export function useItem(id: guid): [ApiResult<Item>, () => void] {
+	const url = `${environment.apiBaseUrl}/Items/${id}`;
+
+	const result = useGet<Item>(url);
+	return result;
+}
+
+export async function editItem(id: guid, item: ItemEditData): Promise<boolean> {
+	const url = `${environment.apiBaseUrl}/Items/${id}`;
+
+	const result = await putAsync<ItemEditData, boolean>(url, item);
+	return result || false;
+}
+
+export async function createItem(item: ItemEditData): Promise<boolean> {
+	const url = `${environment.apiBaseUrl}/Items/`;
+
+	const result = await postAsync<ItemEditData, boolean>(url, item);
+	return result || false;
+}

@@ -1,3 +1,6 @@
+import { faAddressCard } from '@fortawesome/free-regular-svg-icons';
+import { faBookReader, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { FC, useState } from 'react';
 import { IAccountInfo } from 'react-aad-msal';
 import { NavLink } from 'react-router-dom';
@@ -25,7 +28,7 @@ export const Header: FC<HeaderProps> = ({ accountInfo, logout }) => {
 	return (
 		<>
 			<nav className="navbar navbar-expand-lg navbar-light bg-light mb-2">
-				<span className="navbar-brand">Demo</span>
+				<span className="navbar-brand">React demo</span>
 
 				<div className="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul className="navbar-nav mr-auto">
@@ -41,10 +44,15 @@ export const Header: FC<HeaderProps> = ({ accountInfo, logout }) => {
 						</li>
 					</ul>
 					<div className="form-inline my-2 my-lg-0">
+						<FontAwesomeIcon icon={faAddressCard} size="lg" />
+
 						<span className="nav-link" onClick={handleShowUserRawInfo}>
 							{accountInfo.account.name}
 						</span>
-						<button className="btn btn-outline-info mr-2" onClick={handleReadonly}>
+
+						{readonly ? <FontAwesomeIcon icon={faBookReader} size="lg" /> : <FontAwesomeIcon icon={faPencilAlt} size="lg" />}
+
+						<button className="btn btn-outline-info mx-2" onClick={handleReadonly}>
 							Switch to {readonly ? 'R/W' : 'RO'}
 						</button>
 						<button className="btn btn-outline-success" onClick={logout}>

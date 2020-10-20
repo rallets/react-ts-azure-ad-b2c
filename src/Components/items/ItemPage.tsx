@@ -1,11 +1,10 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { guid } from '../../models/guid';
-import { environment } from '../common/env';
+import { toast } from 'react-toastify';
 import { useUserStore } from '../common/UserStoreContext';
-import { ApiResult, postAsync, putAsync, useGet } from '../helpers/useHttp';
-import { ItemEditData, ItemForm } from './ItemForm';
-import { Item } from './ItemsPage';
+import { ItemEditData, ItemEditForm } from './ItemEditForm';
+import { createItem, editItem, useItem } from './itemHelpers';
+import { Item } from './models';
 
 export type ItemPageProps = {
 	isNew: boolean;
@@ -57,6 +56,7 @@ export const ItemPage: FC<ItemPageProps> = ({ isNew, onEdited, onAdded, onCancel
 			if (result) {
 				onAdded(item);
 				setIsAdding(false);
+				toast.info(`Item created`);
 			}
 		}
 	}
@@ -69,13 +69,13 @@ export const ItemPage: FC<ItemPageProps> = ({ isNew, onEdited, onAdded, onCancel
 		<>
 			{loading && <p>Loading...</p>}
 
-			{isEditing && <ItemForm item={item} handleClose={handleClose} handleSave={handleSave} />}
-			{isAdding && <ItemForm item={null} handleClose={handleClose} handleSave={handleSave} />}
+			{isEditing && <ItemEditForm item={item} handleClose={handleClose} handleSave={handleSave} />}
+			{isAdding && <ItemEditForm item={null} handleClose={handleClose} handleSave={handleSave} />}
 
 			{!isEditing && !isAdding && (
 				<>
 					{!readonly && (
-						<div className="row">
+						<div className="row mb-2">
 							<div className="col">
 								<button className="btn btn-outline-primary float-right" onClick={handleIsEditing}>
 									Edit
@@ -103,24 +103,3 @@ export const ItemPage: FC<ItemPageProps> = ({ isNew, onEdited, onAdded, onCancel
 		</>
 	);
 };
-
-function useItem(id: guid): [ApiResult<Item>, () => void] {
-	const url = `${environment.apiBaseUrl}/Items/${id}`;
-
-	const result = useGet<Item>(url);
-	return result;
-}
-
-async function editItem(id: guid, item: ItemEditData): Promise<boolean> {
-	const url = `${environment.apiBaseUrl}/Items/${id}`;
-
-	const result = await putAsync<ItemEditData, boolean>(url, item);
-	return result || false;
-}
-
-async function createItem(item: ItemEditData): Promise<boolean> {
-	const url = `${environment.apiBaseUrl}/Items/`;
-
-	const result = await postAsync<ItemEditData, boolean>(url, item);
-	return result || false;
-}

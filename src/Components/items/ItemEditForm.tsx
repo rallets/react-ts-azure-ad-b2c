@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { Item } from './ItemsPage';
+import { Item } from './models';
 
 export type ItemFormProps = {
 	item: Item | null;
@@ -10,9 +10,8 @@ export type ItemFormProps = {
 
 export type ItemEditData = Pick<Item, 'name' | 'description'>;
 
-export const ItemForm: FC<ItemFormProps> = ({ item, handleSave, handleClose }) => {
+export const ItemEditForm: FC<ItemFormProps> = ({ item, handleSave, handleClose }) => {
 	const { register, handleSubmit, errors } = useForm<ItemEditData>({ defaultValues: item || {} });
-
 	const minLength = (value: string, length: number): boolean => value.length >= length;
 
 	const onSubmit = (data: ItemEditData): void => {
