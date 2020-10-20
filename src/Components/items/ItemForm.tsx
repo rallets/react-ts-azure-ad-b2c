@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Item } from './ItemsPage';
 
 export type ItemFormProps = {
-	item: Item;
+	item: Item | null;
 	handleSave: (item: ItemEditData) => void;
 	handleClose: () => void;
 };
@@ -11,11 +11,11 @@ export type ItemFormProps = {
 export type ItemEditData = Pick<Item, 'name' | 'description'>;
 
 export const ItemForm: FC<ItemFormProps> = ({ item, handleSave, handleClose }) => {
-	const { register, handleSubmit, errors } = useForm<ItemEditData>();
+	const { register, handleSubmit, errors } = useForm<ItemEditData>({ defaultValues: item || {} });
 
 	const minLength = (value: string, length: number): boolean => value.length >= length;
 
-	const onSubmit = (data: ItemEditData) => {
+	const onSubmit = (data: ItemEditData): void => {
 		console.log('data', data);
 		handleSave(data);
 	};
@@ -23,14 +23,16 @@ export const ItemForm: FC<ItemFormProps> = ({ item, handleSave, handleClose }) =
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			{/* Id */}
-			<div className="form-group row">
-				<label htmlFor="id" className="col-sm-2 col-form-label">
-					Id
-				</label>
-				<div className="col-sm-10">
-					<input type="text" readOnly className="form-control-plaintext" id="id" name="id" value={item.id}></input>
+			{item?.id && (
+				<div className="form-group row">
+					<label htmlFor="id" className="col-sm-2 col-form-label">
+						Id
+					</label>
+					<div className="col-sm-10">
+						<input type="text" readOnly className="form-control-plaintext" id="id" name="id" value={item.id}></input>
+					</div>
 				</div>
-			</div>
+			)}
 
 			{/* <ObjectDump value={errors.name} /> */}
 
@@ -64,7 +66,7 @@ export const ItemForm: FC<ItemFormProps> = ({ item, handleSave, handleClose }) =
 					<input
 						type="text"
 						ref={register({ required: true })}
-						className={`form-control ${errors.name ? 'is-invalid' : ''}`}
+						className={`form-control ${errors.description ? 'is-invalid' : ''}`}
 						id="description"
 						name="description"
 					/>

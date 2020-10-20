@@ -16,6 +16,12 @@ module.exports = {
 			"jsxBracketSameLine": true,
 			"bracketSpacing": true,
 		}],
-		"@typescript-eslint/no-empty-function": ["error", { "allow": ["arrowFunctions"] }]
+		"@typescript-eslint/no-empty-function": ["error", { "allow": ["arrowFunctions"] }],
+		"@typescript-eslint/explicit-function-return-type": ["error", {
+			"allowExpressions": true,
+			// "allowTypedFunctionExpressions": true,
+			// "allowConciseArrowFunctionExpressionsStartingWithVoid": true
+		}],
+		"@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
 	},
 };

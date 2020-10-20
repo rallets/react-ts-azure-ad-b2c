@@ -1,10 +1,10 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Link, matchPath, Route, Switch, useLocation, useRouteMatch } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { guid } from '../../models/guid';
 import { environment } from '../common/env';
 import { useUserStore } from '../common/UserStoreContext';
-import { get, HttpResponse } from '../helpers/http';
+import { ApiResult, deleteAsync, useGet } from '../helpers/useHttp';
+import { ItemEditData } from './ItemForm';
 import { ItemPage, ItemPageParams } from './ItemPage';
 
 export type ItemsPageProps = {};
@@ -17,15 +17,51 @@ export type Item = {
 
 export const ItemsPage: FC<ItemsPageProps> = () => {
 	const { readonly } = useUserStore();
-	const [items, loading] = useItems();
+	const [{ payload: apiItems, loading }, doRefresh] = useGetItems();
+	const [updatedItem, setUpdatedItem] = useState<Item | null>(null);
+	const [items, setItems] = useState<Item[]>([]);
+	const [isAdding, setIsAdding] = useState<boolean>(false);
+
+	useEffect(() => {
+		setItems(apiItems || []);
+	}, [apiItems]);
+
+	useEffect(() => {
+		if (!updatedItem) {
+			return;
+		}
+
+		setItems((items) => {
+			let updated = items.map((x) => (x.id === updatedItem.id ? updatedItem : x));
+			updated = updated.sort((a, b) => a.name.localeCompare(b.name));
+			return updated;
+		});
+
+		setUpdatedItem(null);
+	}, [updatedItem]);
 
 	// The `path` lets us build <Route> paths that are
 	// relative to the parent route, while the `url` lets
 	// us build relative links.
 	const { path } = useRouteMatch();
 
-	function handleAddItem(): void {
-		console.log('Add item');
+	function handleCancelEditing(): void {
+		setIsAdding(false);
+	}
+
+	function handleEdited(item: Item): void {
+		setUpdatedItem(item);
+	}
+
+	function handleAdded(_item: ItemEditData): void {
+		doRefresh();
+	}
+
+	async function handleDeleteItem(id: guid): Promise<void> {
+		const result = await deleteItem(id);
+		if (result) {
+			doRefresh();
+		}
 	}
 
 	return (
@@ -33,9 +69,9 @@ export const ItemsPage: FC<ItemsPageProps> = () => {
 			<div className="container-fluid">
 				<div className="row">
 					<div className="col-4">
-						{readonly && (
+						{!readonly && (
 							<div className="d-flex flex-row-reverse">
-								<button className="btn btn-outline-info align-self-end" onClick={handleAddItem}>
+								<button className="btn btn-outline-info align-self-end" onClick={() => setIsAdding(true)}>
 									Add
 								</button>
 							</div>
@@ -44,8 +80,8 @@ export const ItemsPage: FC<ItemsPageProps> = () => {
 						<div className="list-group">
 							{loading && <p>Loading...</p>}
 
-							{items.map((item) => (
-								<ItemsRow key={item.id} item={item} />
+							{(items || []).map((item) => (
+								<ItemRow key={item.id} item={item} onDeleteItem={handleDeleteItem} />
 							))}
 						</div>
 					</div>
@@ -53,7 +89,7 @@ export const ItemsPage: FC<ItemsPageProps> = () => {
 					<div className="col-8">
 						<Switch>
 							<Route path={`${path}/:id`}>
-								<ItemPage />
+								<ItemPage isNew={isAdding} onEdited={handleEdited} onAdded={handleAdded} onCancel={handleCancelEditing} />
 							</Route>
 							<Route path={path}>
 								<h3>Please select a item.</h3>
@@ -68,9 +104,12 @@ export const ItemsPage: FC<ItemsPageProps> = () => {
 
 type ItemsRowProps = {
 	item: Item;
+	onDeleteItem: (id: guid) => void;
 };
 
-const ItemsRow: FC<ItemsRowProps> = ({ item }) => {
+const ItemRow: FC<ItemsRowProps> = ({ item, onDeleteItem }) => {
+	const { readonly } = useUserStore();
+
 	// The `path` lets us build <Route> paths that are
 	// relative to the parent route, while the `url` lets
 	// us build relative links.
@@ -84,39 +123,39 @@ const ItemsRow: FC<ItemsRowProps> = ({ item }) => {
 	});
 	const id = match ? match.params.id : null;
 
+	function handleDeleteItem(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: guid): void {
+		e.preventDefault();
+		onDeleteItem(id);
+	}
+
 	return (
-		<Link key={item.id} className={`list-group-item list-group-item-action ${id === item.id ? 'active' : ''}`} to={`${url}/${item.id}`}>
+		<Link
+			key={item.id}
+			className={`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${
+				id === item.id ? 'active' : ''
+			}`}
+			to={`${url}/${item.id}`}>
 			{item.name}
+
+			{!readonly && id === item.id && (
+				<button className="btn btn-outline-danger" onClick={(e): void => handleDeleteItem(e, item.id)}>
+					Delete
+				</button>
+			)}
 		</Link>
 	);
 };
 
-function useItems(): [Item[], boolean] {
-	const [result, setResult] = React.useState<Item[]>([]);
-	const [loading, setLoading] = React.useState(false);
+function useGetItems(): [ApiResult<Item[]>, () => void] {
+	const url = `${environment.apiBaseUrl}/Items/`;
 
-	useEffect(() => {
-		const fetchData = async (): Promise<void> => {
-			setLoading(true);
+	const result = useGet<Item[]>(url);
+	return result;
+}
 
-			let response: HttpResponse<Item[]>;
-			try {
-				response = await get<Item[]>(`${environment.apiBaseUrl}/Items/`, {
-					headers: {
-						'content-type': 'application/json',
-					},
-				});
-				setResult(response.parsedBody || []);
-			} catch (e) {
-				setResult([]);
-				console.log(e);
-				toast.error(e.message);
-			} finally {
-				setLoading(false);
-			}
-		};
-		fetchData();
-	}, []);
+async function deleteItem(id: guid): Promise<boolean> {
+	const url = `${environment.apiBaseUrl}/Items/${id}`;
 
-	return [result, loading];
+	const result = await deleteAsync<boolean>(url);
+	return result || false;
 }

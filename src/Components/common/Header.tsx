@@ -44,8 +44,8 @@ export const Header: FC<HeaderProps> = ({ accountInfo, logout }) => {
 						<span className="nav-link" onClick={handleShowUserRawInfo}>
 							{accountInfo.account.name}
 						</span>
-						<button className="btn btn-outline-info" onClick={handleReadonly}>
-							{readonly ? 'R/W' : 'RO'}
+						<button className="btn btn-outline-info mr-2" onClick={handleReadonly}>
+							Switch to {readonly ? 'R/W' : 'RO'}
 						</button>
 						<button className="btn btn-outline-success" onClick={logout}>
 							Logout

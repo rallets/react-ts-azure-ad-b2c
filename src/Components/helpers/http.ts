@@ -19,22 +19,24 @@ export async function http<T>(request: RequestInfo): Promise<HttpResponse<T>> {
 	return response;
 }
 
-export async function get<T>(path: string, args: RequestInit = { method: 'get' }): Promise<HttpResponse<T>> {
+export async function get<T>(path: string, args: RequestInit = {}): Promise<HttpResponse<T>> {
+	args.method = args.method || 'get';
 	return await http<T>(new Request(path, args));
 }
 
-export async function post<T>(
-	path: string,
-	body: any,
-	args: RequestInit = { method: 'post', body: JSON.stringify(body) }
-): Promise<HttpResponse<T>> {
+export async function post<T>(path: string, body: any, args: RequestInit = {}): Promise<HttpResponse<T>> {
+	args.method = args.method || 'post';
+	args.body = args.body || JSON.stringify(body);
 	return await http<T>(new Request(path, args));
 }
 
-export async function put<T>(
-	path: string,
-	body: any,
-	args: RequestInit = { method: 'put', body: JSON.stringify(body) }
-): Promise<HttpResponse<T>> {
+export async function put<T>(path: string, body: any, args: RequestInit = {}): Promise<HttpResponse<T>> {
+	args.method = args.method || 'put';
+	args.body = args.body || JSON.stringify(body);
+	return await http<T>(new Request(path, args));
+}
+
+export async function del<T>(path: string, args: RequestInit = {}): Promise<HttpResponse<T>> {
+	args.method = args.method || 'delete';
 	return await http<T>(new Request(path, args));
 }
