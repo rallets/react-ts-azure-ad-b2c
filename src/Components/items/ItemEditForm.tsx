@@ -1,5 +1,7 @@
+import debouncePromise from 'awesome-debounce-promise';
 import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
+import { isTextValid } from './itemHelpers';
 import { Item } from './models';
 
 export type ItemFormProps = {
@@ -45,7 +47,9 @@ export const ItemEditForm: FC<ItemFormProps> = ({ item, handleSave, handleClose 
 						type="text"
 						ref={register({
 							required: true,
-							validate: (value) => minLength(value, 3),
+							validate: debouncePromise(async (value: string) => {
+								return minLength(value, 3) && isTextValid(value);
+							}, 300),
 						})}
 						className={`form-control ${errors.name ? 'is-invalid' : ''}`}
 						id="name"
@@ -53,6 +57,7 @@ export const ItemEditForm: FC<ItemFormProps> = ({ item, handleSave, handleClose 
 					/>
 
 					{errors.name && errors.name.type === 'required' && <div className="invalid-feedback">Required</div>}
+					{errors.name && errors.name.type === 'validate' && <div className="invalid-feedback">Invalid</div>}
 				</div>
 			</div>
 

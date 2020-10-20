@@ -7,3 +7,7 @@ export type Item = {
 };
 
 export type ItemHeader = Pick<Item, 'id' | 'name'>;
+
+export type ValidTextRequest = {
+	text: string;
+};

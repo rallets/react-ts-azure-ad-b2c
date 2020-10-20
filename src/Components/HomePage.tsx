@@ -8,7 +8,7 @@ export const HomePage: FC<{}> = () => {
 				<h1 className="display-4">React & Typescript SPA demo app</h1>
 				<p className="lead">
 					A simple SPA demo app to practice the React basic concepts like <em>custom hooks</em>, <em>effects</em>,&nbsp;
-					<em>context</em>, and many others.
+					<em>context</em>, <em>custom & async debounced form validation</em> and many others.
 				</p>
 				<hr className="my-4" />
 				<p>This demo uses the following packages</p>

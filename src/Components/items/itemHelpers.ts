@@ -2,7 +2,7 @@ import { guid } from '../../models/guid';
 import { environment } from '../common/env';
 import { ApiResult, deleteAsync, postAsync, putAsync, useGet } from '../helpers/useHttp';
 import { ItemEditData } from './ItemEditForm';
-import { Item, ItemHeader } from './models';
+import { Item, ItemHeader, ValidTextRequest } from './models';
 
 export function useGetItems(): [ApiResult<ItemHeader[]>, () => void] {
 	const url = `${environment.apiBaseUrl}/Items/`;
@@ -36,5 +36,12 @@ export async function createItem(item: ItemEditData): Promise<boolean> {
 	const url = `${environment.apiBaseUrl}/Items/`;
 
 	const result = await postAsync<ItemEditData, boolean>(url, item);
+	return result || false;
+}
+
+export async function isTextValid(text: string): Promise<boolean> {
+	const url = `${environment.apiBaseUrl}/Items/valid-text`;
+
+	const result = await postAsync<ValidTextRequest, boolean>(url, { text });
 	return result || false;
 }
