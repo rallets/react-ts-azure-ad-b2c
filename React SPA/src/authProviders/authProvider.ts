@@ -1,6 +1,7 @@
 import { MsalAuthProvider, LoginType, IMsalAuthProviderConfig } from 'react-aad-msal';
 import { Configuration, AuthenticationParameters } from 'msal';
 import { Logger, LogLevel } from 'msal';
+import { environment } from '../Components/common/env';
 
 export declare type LogoutFunction = () => void;
 
@@ -14,10 +15,10 @@ const logger = new Logger(
 	}
 );
 
-const tenant = 'maubeinmetab2c.onmicrosoft.com';
-const signInPolicy = 'B2C_1_react_sign_up_sign_in';
-const applicationID = '582ce2ba-84c0-42c6-a8e0-4ec69dfb017d';
-const reactRedirectUri = 'http://localhost:3000';
+const tenant = environment.AD_B2C_Tenant || ''; // 'yourtenant.onmicrosoft.com';
+const signInPolicy = environment.AD_B2C_SignInPolicy; // 'B2C_1_your_sign_up_sign_in';
+const applicationID = environment.AD_B2C_ApplicationId; // 'xxxxxxxx-your-xADx-GUID-xxxxxxxxxxxx';
+const reactRedirectUri = environment.AD_B2C_ReactRedirectUri; // 'http://localhost:3000';
 
 const tenantSubdomain = tenant.split('.')[0];
 const instance = `https://${tenantSubdomain}.b2clogin.com/tfp/`;
