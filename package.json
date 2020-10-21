@@ -15,6 +15,7 @@
 		"@types/react": "^16.9.51",
 		"@types/react-dom": "^16.9.8",
 		"@types/react-router-dom": "^5.1.6",
+		"@types/uuid": "^8.3.0",
 		"awesome-debounce-promise": "^2.1.0",
 		"bootstrap": "^4.5.2",
 		"msal": "^1.4.1",
@@ -26,7 +27,8 @@
 		"react-router-dom": "^5.2.0",
 		"react-scripts": "3.4.3",
 		"react-toastify": "^6.0.9",
-		"typescript": "^3.7.5"
+		"typescript": "^3.7.5",
+		"uuid": "^8.3.1"
 	},
 	"scripts": {
 		"start": "react-scripts start",

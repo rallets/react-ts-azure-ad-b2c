@@ -4,11 +4,11 @@ import { toast } from 'react-toastify';
 import { useUserStore } from '../common/UserStoreContext';
 import { ItemEditData, ItemEditForm } from './ItemEditForm';
 import { createItem, editItem, useItem } from './itemHelpers';
-import { Item } from './models';
+import { ItemHeader } from './models';
 
 export type ItemPageProps = {
 	isNew: boolean;
-	onEdited: (item: Item) => void;
+	onEdited: (item: ItemHeader) => void;
 	onAdded: (item: ItemEditData) => void;
 	onCancel: () => void;
 };
@@ -30,6 +30,10 @@ export const ItemPage: FC<ItemPageProps> = ({ isNew, onEdited, onAdded, onCancel
 	const [isAdding, setIsAdding] = useState(false);
 
 	useEffect(() => {
+		setIsEditing(false);
+	}, [id]);
+
+	useEffect(() => {
 		setIsAdding(isNew);
 	}, [isNew]);
 
@@ -40,24 +44,21 @@ export const ItemPage: FC<ItemPageProps> = ({ isNew, onEdited, onAdded, onCancel
 	}
 
 	async function handleSave(item: ItemEditData): Promise<void> {
-		console.log('Edit item', item);
-
-		if (isEditing) {
-			const result = await editItem(id, item);
-			if (result) {
-				onEdited({ id, name: item.name, description: item.description });
-				doRefresh();
-				setIsEditing(false);
-			}
+		const result = await editItem(id, item);
+		if (result) {
+			onEdited({ id, name: item.name, numTags: item.tags?.length || 0 });
+			doRefresh();
+			setIsEditing(false);
+			toast.info(`Item saved`);
 		}
+	}
 
-		if (isAdding) {
-			const result = await createItem(item);
-			if (result) {
-				onAdded(item);
-				setIsAdding(false);
-				toast.info(`Item created`);
-			}
+	async function handleAdd(item: ItemEditData): Promise<void> {
+		const result = await createItem(item);
+		if (result) {
+			onAdded(item);
+			setIsAdding(false);
+			toast.info(`Item created`);
 		}
 	}
 
@@ -70,7 +71,7 @@ export const ItemPage: FC<ItemPageProps> = ({ isNew, onEdited, onAdded, onCancel
 			{loading && <p>Loading...</p>}
 
 			{isEditing && <ItemEditForm item={item} handleClose={handleClose} handleSave={handleSave} />}
-			{isAdding && <ItemEditForm item={null} handleClose={handleClose} handleSave={handleSave} />}
+			{isAdding && <ItemEditForm item={null} handleClose={handleClose} handleSave={handleAdd} />}
 
 			{!isEditing && !isAdding && (
 				<>
@@ -94,6 +95,17 @@ export const ItemPage: FC<ItemPageProps> = ({ isNew, onEdited, onAdded, onCancel
 					<div className="row">
 						<div className="col-4">Description</div>
 						<div className="col">{item?.description}</div>
+					</div>
+					<div className="row">
+						<div className="col-4">Tags</div>
+						<div className="col">
+							{!item?.tags.length && <span>---</span>}
+							{item?.tags?.map((tag) => (
+								<span key={tag.id} className="badge badge-pill badge-info">
+									{tag.name}
+								</span>
+							))}
+						</div>
 					</div>
 				</>
 			)}

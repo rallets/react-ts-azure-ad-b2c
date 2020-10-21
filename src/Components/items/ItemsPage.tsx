@@ -3,10 +3,11 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { guid } from '../../models/guid';
 import { useUserStore } from '../common/UserStoreContext';
 import { ItemEditData } from './ItemEditForm';
-import { deleteItem, useGetItems } from './itemHelpers';
+import { deleteItem, searchItems, useGetItems } from './itemHelpers';
 import { ItemPage } from './ItemPage';
 import ItemRow from './ItemRow';
-import { Item, ItemHeader } from './models';
+import { ItemsSearchData, ItemsSearchForm } from './ItemsSearchForm';
+import { ItemHeader } from './models';
 
 export type ItemsPageProps = {};
 
@@ -53,7 +54,7 @@ export const ItemsPage: FC<ItemsPageProps> = () => {
 		setIsAdding(false);
 	}
 
-	function handleEdited(item: Item): void {
+	function handleEdited(item: ItemHeader): void {
 		setUpdatedItem(item);
 	}
 
@@ -66,6 +67,17 @@ export const ItemsPage: FC<ItemsPageProps> = () => {
 		if (result) {
 			doRefresh();
 		}
+	}
+
+	async function handleSearch(payload: ItemsSearchData): Promise<void> {
+		const result = await searchItems(payload.type, payload.text);
+		if (result) {
+			setItems(result);
+		}
+	}
+
+	async function handleResetSearch(): Promise<void> {
+		doRefresh();
 	}
 
 	return (
@@ -81,10 +93,14 @@ export const ItemsPage: FC<ItemsPageProps> = () => {
 							</div>
 						)}
 
+						<ItemsSearchForm handleSearch={handleSearch} handleReset={handleResetSearch} />
+
 						<div className="list-group">
 							{loading && <p>Loading...</p>}
 
-							{(orderedItems || []).map((item) => (
+							{orderedItems.length === 0 && <p>No items found</p>}
+
+							{orderedItems.map((item) => (
 								<ItemRow key={item.id} item={item} onDeleteItem={handleDeleteItem} />
 							))}
 						</div>

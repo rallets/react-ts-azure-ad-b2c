@@ -40,6 +40,8 @@ const ItemRow: FC<ItemRowProps> = ({ item, onDeleteItem }) => {
 			to={`${url}/${item.id}`}>
 			{item.name}
 
+			<span className="badge badge-light">{item.numTags}</span>
+
 			{!readonly && id === item.id && (
 				<button className="btn btn-outline-danger" onClick={(e): void => handleDeleteItem(e, item.id)}>
 					Delete
