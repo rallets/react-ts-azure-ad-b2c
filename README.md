@@ -1,15 +1,16 @@
-# React & Typescript SPA demo app
+# Azure AD B2C + React + Typescript SPA demo app
 
 ## Goals
 
-A simple SPA demo app to practice the React basic concepts like **custom hooks**, **effects**, **context**, **form editing with field array**, **custom & async debounced form validation** and many others.
+A simple SPA demo app to practice the React basic concepts like **Azure AD B2C authentication with MSAL**, **custom hooks**, **effects**, **context**, **form editing with field array**, **custom & async debounced form validation** and many others.
 
 ## Packages
 
 This demo uses the following packages:
 
+- Microsoft Authentication Library for js (MSAL)
 - React
-- Typescript
+- Typescript + linter
 - React router
 - React Hook Form
 - React Toastify
