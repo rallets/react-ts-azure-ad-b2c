@@ -1,44 +1,53 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# React & Typescript SPA demo app
 
-## Available Scripts
+## Goals
 
-In the project directory, you can run:
+A simple SPA demo app to practice the React basic concepts like **custom hooks**, **effects**, **context**, **form editing with field array**, **custom & async debounced form validation** and many others.
 
-### `npm start`
+## Packages
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+This demo uses the following packages:
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+- React
+- Typescript
+- React router
+- React Hook Form
+- React Toastify
+- React Fontawesome svg icons
+- Plain Bootstrap
+- Type-safe Fetch requests with GET, POST, PUT, DELETE methods
 
-### `npm test`
+## Run the demo
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Configure AD B2C & related config files
 
-### `npm run build`
+In the `React SPA` folder the files starting with `.env` are configuration files.
+The configurations found in `.env` can be overridden by the environment-specific file (`.env.development`, `.env.test`, `.env.production`) in which the app is started/deployed.
+By default `npm start` starts as `development`.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- `REACT_APP_API_BASE_URL` => the WebApi url. Example: `https://localhost:5001`.
+- `REACT_APP_AD_B2C_TENANT` => your Azure AD B2C tenant. Example: `yourtenant.onmicrosoft.com`
+- `REACT_APP_AD_B2C_SIGN_IN_POLICY` => your Azure AD B2C sign-in policy. Example: `B2C_1_react_sign_up_sign_in`
+- `REACT_APP_AD_B2C_APPLICATION_ID` => your Azure AD B2C application ID. Example: `xxxxxxxx-your-xADx-GUID-xxxxxxxxxxxx`
+- `REACT_APP_AD_B2C_REACT_REDIRECT_URI` => your Azure AD B2C redirect uri. Example: `http://localhost:3000`
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### Run the WebApi
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Navigate to the `WebApi` folder and run the app (in development mode):
 
-### `npm run eject`
+```cmd
+dotnet run
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Open [https://localhost:5001/items](https://localhost:5001/items) to view it in the browser.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Run the React SPA
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Navigate to the `React SPA` folder and run the app (in development mode):
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```cmd
+npm install
+npm start
+```
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+The React SPA will start in a browser at the address [http://localhost:3000](http://localhost:3000).
